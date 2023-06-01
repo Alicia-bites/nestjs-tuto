@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  dev-db: # just the name
+    image: postgres:13 # système de gestion de base de données relationnelle et objet
+    ports:
+      - 5434:5432 # it will be exported on the port 5334 --> so if we connect to postgres:5334 we will be able to access it
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: nest
+    networks:
+      - freecodecamp
+
+  test-db:
+    image: postgres:13
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: nest
+    networks:
+      - freecodecamp
+
+networks:
+  freecodecamp:

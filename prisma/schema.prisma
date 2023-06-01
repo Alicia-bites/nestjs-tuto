@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// A model is a representation of a database 
+// table or collection in an application's data model.
+model User {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now()) // time at the creation
+  updatedAt DateTime @updatedAt // time when update has been done
+
+  email String @unique
+  hash String
+
+  firstName String? // ? --> means optionnal
+  lastName String?
+
+  bookmarks Bookmark[]
+  @@map("users")
+}
+
+model Bookmark {
+  id Int @id @default(autoincrement()) // represents the primary key of the "Bookmark" model and will be automatically incremented for each new bookmark created.
+  createdAt DateTime @default(now()) // time at the creation
+  updatedAt DateTime @updatedAt // time when update has been done
+
+  title String
+  description String?
+  link String
+
+  userId Int
+
+  // [userId] indicates that the userId field in the Bookmark 
+  // model is associated with the id field in the User model.
+  // The references argument [id] specifies the referenced
+  // field in the User model. en gros id --> userId liés par le sang
+  user  User @relation(fields: [userId], references: [id])
+
+  // specifies the name of the table in the underlying 
+  // database that will store the bookmarks. In this
+  // case, the table will be named "bookmarks".
+  @@map("bookmarks") 
+}
+
+// --> @relation 
+// The @relation directive specifies the relationship between two models and accepts several arguments:
+// 
+// fields: Specifies the field(s) in the current model that participate in the relationship. In this case, userId is the field in the "Bookmark" model that links to the "User" model.
+// 
+// references: Specifies the field(s) in the related model that the current model's field(s) reference. In this case, [id] indicates that the userId field in the "Bookmark" model is associated with the id field in the "User" model.
+// 
+// onDelete: Cascade: Specifies the behavior of the relationship when a user is deleted. In this case, it is set to Cascade, which means that if a user is deleted, all associated bookmarks will also be deleted.
